@@ -1,0 +1,24 @@
+{
+    "data_root": "./data",
+    "global_page_size": 10,
+    "models": {
+        "post": {
+            "route": "posts",
+            "behaviors": [
+                "Pageable",
+                "Postable",
+                "Deleteable",
+                "Updateable"
+            ],
+            "init_params": {
+                "page_size": 5,
+                "header_file": "header",
+                "files": [
+                    "header",
+                    "content",
+                    "md"
+                ]
+            }
+        }
+    }
+}
