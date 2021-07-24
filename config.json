@@ -1,23 +1,26 @@
 {
     "data_root": "./data",
-    "global_page_size": 10,
     "models": {
         "post": {
             "route": "posts",
             "behaviors": [
-                "Pageable",
+                "Pageable"
+            ],
+            "auth_behaviors": [
                 "Postable",
                 "Deleteable",
                 "Updateable"
             ],
             "init_params": {
-                "page_size": 5,
                 "header_file": "header",
                 "files": [
                     "header",
                     "content",
                     "md"
-                ]
+                ],
+                "non_auth": {
+                    "page_size": 5
+                }
             }
         }
     }
