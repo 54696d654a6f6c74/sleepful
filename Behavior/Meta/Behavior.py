@@ -6,7 +6,7 @@ from typing import Callable
 class Behavior(ABC):
     @abstractclassmethod
     def _bind(self, bp: Blueprint):
-        raise NotImplementedError
+        ...
 
     def bind(self, bp: Blueprint, auth: Callable = None, **auth_opts):
         if auth is not None:
