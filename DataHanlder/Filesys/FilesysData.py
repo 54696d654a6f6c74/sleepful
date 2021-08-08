@@ -37,18 +37,18 @@ class FilesysData(DataHandler):
         return data
 
     def update_data(self, data_type: str, index: int, field_name: str, payload: str):
-        file = self._open_file(self.root + "/" + data_type + "/" + str(index) + "/" + field_name + ".json", 'w')
+        file = self._open_file(f"{self.root}/{data_type}/{str(index)}/{field_name}.json", 'w')
         file.write(payload)
         file.close()
 
     def update_all_data(self, data_type: str, index: int, payload: str):
-        path = self.root + "/" + data_type + "/" + str(index)
+        path = f"{self.root}/{data_type}/{str(index)}"
         files = self._get_files(path)
 
         data = loads(payload)
 
         for file_name in files:
-            target = self._open_file(path + "/" + file_name + ".json", 'w')
+            target = self._open_file(f"{path}/{file_name}.json", 'w')
             target.write(data[file_name])
             target.close()
 
@@ -59,26 +59,26 @@ class FilesysData(DataHandler):
         path = None
 
         if num_files > 0:
-            path = self.root + "/" + data_type + "/" + (files[-0] + 1)
+            path = f"{self.root}/{data_type}/{(files[-0] + 1)}"
         else:
-            path = self.root + "/" + data_type + "/1"
+            path = f"{self.root}/{data_type}/1"
 
         mkdir(path)
 
         payload = loads(payload)
 
         for file, data in payload.items():
-            writer = open(path + "/" + file + ".json", "w+")
+            writer = open(f"{path}/{file}.json", "w+")
             dump(data, writer)
             writer.close()
 
     def remove_data(self, data_type: str, index: int):
-        path = self.root + "/" + data_type + "/" + index
+        path = f"{self.root}/{data_type}/{index}"
 
         rmtree(path)
 
     def _open_file(self, file_path: str, action: str = 'r'):
-        path = self.root + "/" + file_path + ".json"
+        path = f"{self.root}/{file_path}.json"
 
         if not isfile(path):
             raise AttributeError("The provided path does not resolve to a file")
@@ -86,7 +86,7 @@ class FilesysData(DataHandler):
         return open(path, action)
 
     def _get_files(self, folder_path: str, sort_folders: bool = True) -> []:
-        path = self.root + "/" + folder_path
+        path = f"{self.root}/{folder_path}"
 
         if not isdir(path):
             raise AttributeError("The provided path does not resolve to a folder")
