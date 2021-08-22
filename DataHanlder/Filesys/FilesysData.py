@@ -1,5 +1,5 @@
-from DataHanlder.Meta import DataHandler
-from json import load, loads, dump
+from DataHanlder import DataHandler
+from json import load, dump, dumps
 
 from os.path import isdir, isfile
 from os import listdir, mkdir
@@ -16,64 +16,64 @@ class FilesysData(DataHandler):
     def __exit__(self, exec_type, exec_value, traceback):
         pass
 
-    def get_data_field(self, field_name: str):
-        file = self._open_file(field_name)
+    def get_data_field(self, index: int, field_name: str) -> dict:
+        file = self._open_file(f"{str(index)}/{field_name}")
         data = load(file)
         file.close()
 
         return data
 
-    def get_data_fields(self, container_handle: str, sort_data: bool = True) -> [dict]:
-        targets = self._get_files(container_handle, sort_data)
+    def get_data_fields(self, index: int, fields: list, sort_data: bool = False) -> dict:
+        data = {}
 
-        data = []
-
-        for file_name in targets:
-            file = self._open_file(file_name)
-
-            data.append(load(file))
+        for file_name in fields:
+            file = self._open_file(f"{str(index)}/{file_name}")
+            data[file_name] = load(file)
             file.close()
 
         return data
 
-    def update_data(self, data_type: str, index: int, field_name: str, payload: str):
-        file = self._open_file(f"{self.root}/{data_type}/{str(index)}/{field_name}.json", 'w')
+    def get_all_entry_indecies(self, sort_data: bool = True) -> []:
+        all_entries = self._get_files(sort_data = sort_data)
+
+        return all_entries
+
+    def update_data(self, index: int, field_name: str, payload: str):
+        file = self._open_file(f"{str(index)}/{field_name}", 'w')
         file.write(payload)
         file.close()
 
-    def update_all_data(self, data_type: str, index: int, payload: str):
-        path = f"{self.root}/{data_type}/{str(index)}"
-        files = self._get_files(path)
+    def update_multiple(self, index: int, fields: list, payload: str):
+        path = str(index)
 
-        data = loads(payload)
+        # print(payload)
+        # print(loads(payload))
 
-        for file_name in files:
-            target = self._open_file(f"{path}/{file_name}.json", 'w')
-            target.write(data[file_name])
+        for file_name in fields:
+            target = self._open_file(f"{path}/{file_name}", 'w')
+            target.write(dumps(payload[file_name]))
             target.close()
 
-    def new_data(self, data_type: str, payload: str):
-        files = self._get_files(data_type)
+    def new_data(self, payload: dict):
+        files = self._get_files()
         num_files = len(files)
 
         path = None
 
         if num_files > 0:
-            path = f"{self.root}/{data_type}/{(files[-0] + 1)}"
+            path = f"{self.root}/{str(int(files[-1]) + 1)}"
         else:
-            path = f"{self.root}/{data_type}/1"
+            path = f"{self.root}/1"
 
         mkdir(path)
-
-        payload = loads(payload)
 
         for file, data in payload.items():
             writer = open(f"{path}/{file}.json", "w+")
             dump(data, writer)
             writer.close()
 
-    def remove_data(self, data_type: str, index: int):
-        path = f"{self.root}/{data_type}/{index}"
+    def remove_data(self, index: int):
+        path = f"{self.root}/{index}"
 
         rmtree(path)
 
@@ -85,7 +85,7 @@ class FilesysData(DataHandler):
 
         return open(path, action)
 
-    def _get_files(self, folder_path: str, sort_folders: bool = True) -> []:
+    def _get_files(self, folder_path: str = "", sort_data: bool = True) -> []:
         path = f"{self.root}/{folder_path}"
 
         if not isdir(path):
@@ -93,7 +93,7 @@ class FilesysData(DataHandler):
 
         files = listdir(path)
 
-        if sort_folders:
+        if sort_data:
             files = sorted(files)
 
         return files

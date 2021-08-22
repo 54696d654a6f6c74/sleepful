@@ -2,32 +2,13 @@ from .Listable import Listable
 
 from flask import Response, Blueprint, request
 
-from os import mkdir
-from json import dumps
-
 
 class Postable(Listable):
     def write_data(self) -> Response:
         data = request.get_json()
 
-        all_files = self.get_all_data(True)
-
-        target = None
-
-        if len(all_files) > 0:
-            target = f"{self.route}/{str(all_files[len(all_files) - 1] + 1)}"
-        else:
-            target = f"{self.route}/1"
-
-        mkdir(target)
-
-        for file in self.files:
-            data_to_write = data[file]
-
-            writer = open(f"{target}/{file}.json", "w")
-            writer.write(dumps(data_to_write))
-
-            writer.close()
+        with self.data_handler(self.route) as handler:
+            handler.new_data(data)
 
         return Response(status = 201)
 

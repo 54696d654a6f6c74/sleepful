@@ -3,6 +3,8 @@ from Behavior import mapper, Behavior
 
 from Auth.BasicAuth import auth
 
+from DataHanlder import FilesysData
+
 
 def _get_behavior(name: str, behaviors: [], init_params: dict, bp: Blueprint) -> Behavior:
     types = []
@@ -15,19 +17,18 @@ def _get_behavior(name: str, behaviors: [], init_params: dict, bp: Blueprint) ->
 
 def bind(app: Flask, config: dict):
     for name, model in config["models"].items():
-        model["init_params"]["route"] = config["data_root"] + "/" + model["route"]
+        model["init_params"]["route"] = f"{config['data_root']}/{model['route']}"
+        model["init_params"]["data_handler"] = FilesysData
 
         auth_init = {}
         non_auth_init = {}
 
         if "non_auth" in model["init_params"]:
-            non_auth_init = {}
             non_auth_init.update(model["init_params"]["non_auth"])
 
             del model["init_params"]["non_auth"]
 
         if "auth" in model["init_params"]:
-            auth_init = {}
             auth_init.update(model["init_params"]["auth"])
 
             del model["init_params"]["auth"]
@@ -36,7 +37,6 @@ def bind(app: Flask, config: dict):
             bp = Blueprint(name, __name__, url_prefix = "/" + model["route"])
 
             non_auth_init.update(model["init_params"])
-            print(non_auth_init)
 
             view_obj = _get_behavior(name, model["behaviors"], non_auth_init, bp)
             view_obj.bind(bp)

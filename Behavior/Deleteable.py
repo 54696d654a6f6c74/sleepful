@@ -2,17 +2,16 @@ from .Indexable import Indexable
 
 from flask import Blueprint, Response
 
-from shutil import rmtree
-
 
 class Deleteable(Indexable):
     def delete_folder(self, index: int) -> Response:
         try:
-            path = f"{self.path}/{str(index)}"
+            with self.data_handler(self.route) as handler:
+                handler.remove_data(index)
 
-            rmtree(path)
         except FileNotFoundError:
             return Response(status = 404)
+
         return Response(status = 200)
 
     def _bind(self, bp: Blueprint):

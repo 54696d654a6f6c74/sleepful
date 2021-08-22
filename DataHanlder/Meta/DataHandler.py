@@ -1,36 +1,41 @@
-from abc import ABC, abstractclassmethod
+from abc import ABC, abstractmethod
 
 
 class DataHandler(ABC):
-    @abstractclassmethod
+    @abstractmethod
     def __init__(self, root_path: str):
         ...
 
+    @abstractmethod
     def __enter__(self):
         ...
 
+    @abstractmethod
     def __exit__(self, exce_type, exec_value, traceback):
         ...
 
-    @abstractclassmethod
-    def get_data_field(self, field_name: str):
+    @abstractmethod
+    def get_data_field(self, index: int, field_name: str) -> dict:
         ...
 
-    def get_data_fields(self, container_handle: str, sort_data: bool = True) -> [dict]:
+    def get_data_fields(self, index: int, fields: list, sort_data: bool = False) -> dict:
         ...
 
-    @abstractclassmethod
-    def update_data(self, data_type: str, index: int, field_name: str, payload: str):
+    def get_all_entry_indecies(self, sort_data: bool = True) -> []:
         ...
 
-    @abstractclassmethod
-    def update_all_data(self, data_type: str, index: int, payload: str):
+    @abstractmethod
+    def update_data(self, index: int, field_name: str, payload: str):
         ...
 
-    @abstractclassmethod
-    def new_data(self, data_type: str, payload: str):
+    @abstractmethod
+    def update_multiple(self, index: int, fields: list, payload: str):
         ...
 
-    @abstractclassmethod
-    def remove_data(self, data_type: str, index: int):
+    @abstractmethod
+    def new_data(self, payload: dict):
+        ...
+
+    @abstractmethod
+    def remove_data(self, index: int):
         ...

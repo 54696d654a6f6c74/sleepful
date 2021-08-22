@@ -1,11 +1,10 @@
 from flask import Blueprint, Response
 
-from json import loads
-
 from os import makedirs
 from os.path import exists
 
 from Behavior import Behavior
+from DataHanlder import DataHandler
 
 
 class Indexable(Behavior):
@@ -13,39 +12,31 @@ class Indexable(Behavior):
     Behavior for data that can be accessed
     via enumerable indecies
     """
-    def __init__(self, route: str, files: []):
+    def __init__(self, route: str, data_handler: type[DataHandler], **args):
+        self.data_handler = data_handler
         self.route = route
-        self.files = files
 
-        if not exists(route):
-            makedirs(route)
+        self.fields = args["fields"]
+
+        if not exists(self.route):
+            makedirs(self.route)
 
     def get_data_for_index(self, index: int):
         data_dict = {}
 
-        for file in self.files:
-            try:
-                io_file = open(f"{self.route}/{str(index)}/{file}.json", "r")
-            except FileNotFoundError:
-                return Response(status = 404)
-
-            data = loads(io_file.read())
-
-            io_file.close()
-
-            data_dict[file] = data
+        with self.data_handler(self.route) as handler:
+            data_dict = handler.get_data_fields(index, self.fields)
 
         return data_dict
 
     def get_data_for_item(self, index: int, file_name: str):
+        data = {}
+
         try:
-            io_file = open(f"{self.route}/{str(index)}/{file_name}.json", "r")
+            with self.data_handler(self.route) as handler:
+                data = handler.get_data_field(index, file_name)
         except FileNotFoundError:
             return Response(status = 404)
-
-        data = loads(io_file.read())
-
-        io_file.close()
 
         return data
 

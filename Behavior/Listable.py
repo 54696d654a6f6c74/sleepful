@@ -2,7 +2,7 @@ from .Indexable import Indexable
 
 from flask import Blueprint, request
 
-from os import listdir
+from DataHanlder import DataHandler
 
 
 class Listable(Indexable):
@@ -10,16 +10,16 @@ class Listable(Indexable):
     Behavior for data that can be listed,
     allowing for manipulations such as sorting.
     """
-    def __init__(self, route: str, files: [], header_file: str):
-        super().__init__(route, files)
-        self.header_file = header_file
+    def __init__(self, route: str, data_handler: type[DataHandler], **args):
+        super().__init__(route, data_handler, **args)
+        self.header_file = args["header_file"]
 
     def get_all_data(self, sort_data: bool) -> []:
-        data = map(int, listdir(self.route))
+        data = []
+        with self.data_handler(self.route) as handler:
+            data = handler.get_all_entry_indecies(sort_data)
 
-        if sort_data:
-            return sorted(data)
-        return data
+        return map(int, data)
 
     def get_header_data(self) -> []:
         headers = []

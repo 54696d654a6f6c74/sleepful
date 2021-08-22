@@ -4,23 +4,19 @@
         "post": {
             "route": "posts",
             "behaviors": [
-                "Pageable"
-            ],
-            "auth_behaviors": [
+                "Pageable",
                 "Postable",
                 "Deleteable",
                 "Updateable"
             ],
             "init_params": {
                 "header_file": "header",
-                "files": [
+                "fields": [
                     "header",
                     "content",
                     "md"
                 ],
-                "non_auth": {
-                    "page_size": 5
-                }
+                "page_size": 5
             }
         }
     }

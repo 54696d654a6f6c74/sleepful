@@ -1,10 +1,16 @@
-from abc import ABC, abstractclassmethod
+from abc import ABC, abstractmethod
 from flask import Blueprint
 from typing import Callable
 
+from DataHanlder import DataHandler
+
 
 class Behavior(ABC):
-    @abstractclassmethod
+    @abstractmethod
+    def __init__(self, route: str, data_handler: type[DataHandler], **args):
+        ...
+
+    @abstractmethod
     def _bind(self, bp: Blueprint):
         ...
 
