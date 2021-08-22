@@ -46,9 +46,6 @@ class FilesysData(DataHandler):
     def update_multiple(self, index: int, fields: list, payload: str):
         path = str(index)
 
-        # print(payload)
-        # print(loads(payload))
-
         for file_name in fields:
             target = self._open_file(f"{path}/{file_name}", 'w')
             target.write(dumps(payload[file_name]))
