@@ -1,13 +1,25 @@
 {
+    "imports": {
+        "data_handler": {
+            "name": "filesys",
+            "path": "./DataHandler/Filesys/FilesysData.py",
+            "module_name": "DataHandler.Filesys"
+        }
+    },
     "data_root": "./data",
     "models": {
         "post": {
             "route": "posts",
-            "behaviors": [
-                "Pageable",
+            "data_handler": "filesys",
+            "auth_behaviors":
+            [
                 "Postable",
                 "Deleteable",
                 "Updateable"
+            ],
+            "behaviors": [
+                "Pageable",
+                "Login"
             ],
             "init_params": {
                 "header_file": "header",
@@ -16,7 +28,9 @@
                     "content",
                     "md"
                 ],
-                "page_size": 5
+                "non_auth":{
+                    "page_size": 5
+                }
             }
         }
     }

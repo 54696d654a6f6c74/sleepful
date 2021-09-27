@@ -1,6 +1,6 @@
 from Binders.ConfigBinder import bind
 
-from flask import Flask, request, session, Response
+from flask import Flask # , session, request, Response
 from flask_cors import CORS
 from flask_session import Session
 
@@ -15,15 +15,6 @@ app.config["SESSION_TYPE"] = "filesystem"
 app.config["SESSION_COOKIE_SECURE"] = True
 
 Session(app)
-
-
-@app.route("/login", methods=['POST'])
-def login():
-    username = request.get_json()["username"]
-    session["username"] = username
-    return Response(status = 200)
-
-
 CORS(app)
 
 config = None
