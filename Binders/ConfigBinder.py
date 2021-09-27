@@ -16,7 +16,7 @@ def _get_behavior(name: str, behaviors: list, init_params: dict) -> Behavior:
     return view(**init_params)
 
 
-def register(name: str, model: dict, init_params: dict, prefix: str = "", auth_func: Callable = None, auth_params: dict = None) -> Blueprint:
+def get_bp(name: str, model: dict, init_params: dict, prefix: str = "", auth_func: Callable = None, auth_params: dict = None) -> Blueprint:
     behaviors_key = prefix + "behaviors"
     type_name = prefix + name
 
@@ -42,5 +42,5 @@ def bind(app: Flask, config: dict):
         auth_init = init | model.get('auth_init', {})
         non_auth_init = init | model.get('non_auth_init', {})
 
-        app.register_blueprint(register(name, model, non_auth_init))
-        app.register_blueprint(register(name, model, auth_init, "auth_", auth))
+        app.register_blueprint(get_bp(name, model, non_auth_init))
+        app.register_blueprint(get_bp(name, model, auth_init, "auth_", auth))
