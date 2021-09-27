@@ -2,7 +2,7 @@ from .Indexable import Indexable
 
 from flask import Blueprint, request
 
-from DataHanlder import DataHandler
+from DataHandler import DataHandler
 
 
 class Listable(Indexable):
@@ -14,14 +14,14 @@ class Listable(Indexable):
         super().__init__(route, data_handler, **args)
         self.header_file = args["header_file"]
 
-    def get_all_data(self, sort_data: bool) -> []:
+    def get_all_data(self, sort_data: bool) -> list:
         data = []
         with self.data_handler(self.route) as handler:
-            data = handler.get_all_entry_indecies(sort_data)
+            data = handler.get_all_entry_indices(sort_data)
 
         return map(int, data)
 
-    def get_header_data(self) -> []:
+    def get_header_data(self) -> list:
         headers = []
         sort_data = request.args.get("sort", True, bool)
 
@@ -33,7 +33,7 @@ class Listable(Indexable):
 
         final_data = {
             "headers": headers,
-            "indecies": list(data)
+            "indices": list(data)
         }
 
         return final_data

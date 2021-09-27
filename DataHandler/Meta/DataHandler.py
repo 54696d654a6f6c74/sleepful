@@ -11,7 +11,7 @@ class DataHandler(ABC):
         ...
 
     @abstractmethod
-    def __exit__(self, exce_type, exec_value, traceback):
+    def __exit__(self, exec_type, exec_value, traceback):
         ...
 
     @abstractmethod
@@ -21,7 +21,7 @@ class DataHandler(ABC):
     def get_data_fields(self, index: int, fields: list, sort_data: bool = False) -> dict:
         ...
 
-    def get_all_entry_indecies(self, sort_data: bool = True) -> []:
+    def get_all_entry_indices(self, sort_data: bool = True) -> list:
         ...
 
     @abstractmethod

@@ -12,7 +12,7 @@ class Updateable(Indexable):
 
         try:
             with self.data_handler(self.route) as handler:
-                handler.updata_data(index, file_name, data_to_write)
+                handler.update_data(index, file_name, data_to_write)
 
         except FileNotFoundError:
             return Response(status = 404)

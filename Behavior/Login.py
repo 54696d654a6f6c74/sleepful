@@ -1,6 +1,6 @@
 from Behavior import Behavior
 
-from DataHanlder import DataHandler
+from DataHandler import DataHandler
 
 from flask import session, request, Response, Blueprint
 

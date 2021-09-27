@@ -1,4 +1,4 @@
-from DataHanlder import DataHandler
+from DataHandler import DataHandler
 
 import sqlite3
 

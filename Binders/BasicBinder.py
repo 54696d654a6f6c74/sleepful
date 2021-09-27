@@ -1,7 +1,7 @@
 from flask import Blueprint, Flask
 
 
-def bind(app: Flask, names: [], bindees: []):
+def bind(app: Flask, names: list, bindees: list):
     """
     For each bindee it creates a blueprint
     with that corresponding name and registers

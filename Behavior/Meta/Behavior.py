@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from flask import Blueprint
 from typing import Callable
 
-from DataHanlder import DataHandler
+from DataHandler import DataHandler
 
 
 class Behavior(ABC):

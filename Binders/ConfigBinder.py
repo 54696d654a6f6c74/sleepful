@@ -3,10 +3,10 @@ from Behavior import mapper, Behavior
 
 from Auth.BasicAuth import auth
 
-from DataHanlder import FilesysData
+from DataHandler import FilesysData
 
 
-def _get_behavior(name: str, behaviors: [], init_params: dict, bp: Blueprint) -> Behavior:
+def _get_behavior(name: str, behaviors: list, init_params: dict) -> Behavior:
     types = []
     for behavior in behaviors:
         types.append(mapper[behavior])
@@ -38,7 +38,7 @@ def bind(app: Flask, config: dict):
 
             non_auth_init.update(model["init_params"])
 
-            view_obj = _get_behavior(name, model["behaviors"], non_auth_init, bp)
+            view_obj = _get_behavior(name, model["behaviors"], non_auth_init)
             view_obj.bind(bp)
 
             app.register_blueprint(bp)

@@ -1,13 +1,13 @@
 from flask import Blueprint, Response
 
 from Behavior import Behavior
-from DataHanlder import DataHandler
+from DataHandler import DataHandler
 
 
 class Indexable(Behavior):
     """
     Behavior for data that can be accessed
-    via enumerable indecies
+    via enumerable indices
     """
     def __init__(self, route: str, data_handler: type[DataHandler], **args):
         self.data_handler = data_handler
