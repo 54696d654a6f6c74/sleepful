@@ -1,3 +1,4 @@
+from typing import Callable
 from flask import Blueprint, Flask
 from Behavior import mapper, Behavior
 
@@ -15,40 +16,31 @@ def _get_behavior(name: str, behaviors: list, init_params: dict) -> Behavior:
     return view(**init_params)
 
 
+def register(name: str, model: dict, init_params: dict, prefix: str = "", auth_func: Callable = None, auth_params: dict = None) -> Blueprint:
+    behaviors_key = prefix + "behaviors"
+    type_name = prefix + name
+
+    if behaviors_key in model:
+        bp = Blueprint(type_name, __name__, url_prefix = "/" + model["route"])
+
+        view_obj = _get_behavior(type_name, model[behaviors_key], init_params)
+        if auth_params is not None:
+            view_obj.bind(bp, auth_func, **auth_params)
+        else:
+            view_obj.bind(bp, auth_func or None)
+
+        return bp
+
+
 def bind(app: Flask, config: dict):
     for name, model in config["models"].items():
-        model["init_params"]["route"] = f"{config['data_root']}/{model['route']}"
-        model["init_params"]["data_handler"] = FilesysData
+        model["init"]["route"] = f"{config['data_root']}/{model['route']}"
+        model["init"]["data_handler"] = FilesysData # W.I.P
 
-        auth_init = {}
-        non_auth_init = {}
+        init = model.get('init', {})
 
-        if "non_auth" in model["init_params"]:
-            non_auth_init.update(model["init_params"]["non_auth"])
+        auth_init = init | model.get('auth_init', {})
+        non_auth_init = init | model.get('non_auth_init', {})
 
-            del model["init_params"]["non_auth"]
-
-        if "auth" in model["init_params"]:
-            auth_init.update(model["init_params"]["auth"])
-
-            del model["init_params"]["auth"]
-
-        if "behaviors" in model:
-            bp = Blueprint(name, __name__, url_prefix = "/" + model["route"])
-
-            non_auth_init.update(model["init_params"])
-
-            view_obj = _get_behavior(name, model["behaviors"], non_auth_init)
-            view_obj.bind(bp)
-
-            app.register_blueprint(bp)
-
-        if "auth_behaviors" in model:
-            bp = Blueprint(name + "_auth", __name__, url_prefix = "/" + model["route"])
-
-            auth_init.update(model["init_params"])
-
-            view_obj = _get_behavior(name, model["auth_behaviors"], auth_init, bp)
-            view_obj.bind(bp, auth)
-
-            app.register_blueprint(bp)
+        app.register_blueprint(register(name, model, non_auth_init))
+        app.register_blueprint(register(name, model, auth_init, "auth_", auth))

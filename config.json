@@ -21,16 +21,16 @@
                 "Pageable",
                 "Login"
             ],
-            "init_params": {
+            "init": {
                 "header_file": "header",
                 "fields": [
                     "header",
                     "content",
                     "md"
-                ],
-                "non_auth":{
-                    "page_size": 5
-                }
+                ]
+            },
+            "non_auth_init":{
+                "page_size": 5
             }
         }
     }
