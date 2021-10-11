@@ -29,7 +29,7 @@ class DataHandler(ABC):
         ...
 
     @abstractmethod
-    def update_multiple(self, index: int, fields: list, payload: str):
+    def update_multiple(self, index: int, fields: list, payload: dict):
         ...
 
     @abstractmethod

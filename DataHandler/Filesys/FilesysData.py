@@ -31,6 +31,8 @@ class FilesysData(DataHandler):
             data[file_name] = load(file)
             file.close()
 
+        if sort_data:
+            return sorted(data)
         return data
 
     def get_all_entry_indices(self, sort_data: bool = True) -> list:
@@ -43,7 +45,7 @@ class FilesysData(DataHandler):
         file.write(payload)
         file.close()
 
-    def update_multiple(self, index: int, fields: list, payload: str):
+    def update_multiple(self, index: int, fields: list, payload: dict):
         path = str(index)
 
         for file_name in fields:
