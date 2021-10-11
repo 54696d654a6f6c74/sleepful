@@ -1,4 +1,4 @@
-from DataHanlder import DataHandler
+from DataHandler import DataHandler
 from json import load, dump, dumps
 
 from os.path import isdir, isfile
@@ -31,9 +31,11 @@ class FilesysData(DataHandler):
             data[file_name] = load(file)
             file.close()
 
+        if sort_data:
+            return sorted(data)
         return data
 
-    def get_all_entry_indecies(self, sort_data: bool = True) -> []:
+    def get_all_entry_indices(self, sort_data: bool = True) -> list:
         all_entries = self._get_files(sort_data = sort_data)
 
         return all_entries
@@ -43,11 +45,8 @@ class FilesysData(DataHandler):
         file.write(payload)
         file.close()
 
-    def update_multiple(self, index: int, fields: list, payload: str):
+    def update_multiple(self, index: int, fields: list, payload: dict):
         path = str(index)
-
-        # print(payload)
-        # print(loads(payload))
 
         for file_name in fields:
             target = self._open_file(f"{path}/{file_name}", 'w')
@@ -85,7 +84,7 @@ class FilesysData(DataHandler):
 
         return open(path, action)
 
-    def _get_files(self, folder_path: str = "", sort_data: bool = True) -> []:
+    def _get_files(self, folder_path: str = "", sort_data: bool = True) -> list:
         path = f"{self.root}/{folder_path}"
 
         if not isdir(path):

@@ -3,7 +3,7 @@ from Pagination.pagelist import Pagelist
 
 from flask import request, Blueprint
 
-from DataHanlder import DataHandler
+from DataHandler import DataHandler
 
 from math import ceil
 
@@ -17,7 +17,7 @@ class Pageable(Listable):
         super().__init__(route, data_handler, **args)
         self.page_size = args["page_size"]
 
-    def get_all_data(self, sort_data: bool) -> []:
+    def get_all_data(self, sort_data: bool) -> list:
         data = super().get_all_data(sort_data)
 
         if request.args.get('all', False, bool) is True:

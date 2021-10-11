@@ -1,5 +1,5 @@
 class Pagelist:
-    def __init__(self, page_size: int, base: [] = None):
+    def __init__(self, page_size: int, base: list = None):
         self.page_size = page_size
 
         self.items = []
@@ -8,7 +8,7 @@ class Pagelist:
             for item in base:
                 self.add(item)
 
-    def get_page(self, page: int) -> []:
+    def get_page(self, page: int) -> list:
         return self.items[page]
 
     def add(self, item):

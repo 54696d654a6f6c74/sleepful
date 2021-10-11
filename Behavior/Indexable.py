@@ -1,25 +1,19 @@
 from flask import Blueprint, Response
 
-from os import makedirs
-from os.path import exists
-
 from Behavior import Behavior
-from DataHanlder import DataHandler
+from DataHandler import DataHandler
 
 
 class Indexable(Behavior):
     """
     Behavior for data that can be accessed
-    via enumerable indecies
+    via enumerable indices
     """
     def __init__(self, route: str, data_handler: type[DataHandler], **args):
         self.data_handler = data_handler
         self.route = route
 
         self.fields = args["fields"]
-
-        if not exists(self.route):
-            makedirs(self.route)
 
     def get_data_for_index(self, index: int):
         data_dict = {}
@@ -44,7 +38,7 @@ class Indexable(Behavior):
         bp.add_url_rule("/<int:index>",
             view_func = self.get_data_for_index,
             methods = ['GET']
-        ),
+        )
 
         bp.add_url_rule("/<int:index>/<string:file_name>",
             view_func = self.get_data_for_item,
