@@ -1,16 +1,19 @@
 {
     "imports": {
-        "data_handler": {
-            "name": "filesys",
-            "path": "./DataHandler/Filesys/FilesysData.py",
-            "module_name": "DataHandler.Filesys"
-        }
+        "data_handler": [
+            {
+                "name": "filesys",
+                "path": "./DataHandler/Filesys/FilesysData.py",
+                "module_name": "DataHandler.Filesys"
+            }
+        ]
     },
     "data_root": "./data",
     "models": {
         "post": {
             "route": "posts",
             "data_handler": "filesys",
+            "auth": "basic_auth",
             "auth_behaviors":
             [
                 "Postable",

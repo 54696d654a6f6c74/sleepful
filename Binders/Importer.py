@@ -11,12 +11,15 @@ def get_module(module_name: str, module_path: str):
 def handle_imports(imports: dict) -> dict:
     proccessed = {}
 
-    for key, value in imports.items():
-        mod_name = value["module_name"]
-        mod_path = value["path"]
+    for key, values in imports.items():
+        proccessed[key] = {}
 
-        mod = get_module(mod_name, mod_path)
+        for value in values:
+            mod_name = value["module_name"]
+            mod_path = value["path"]
 
-        proccessed[value["name"]] = mod
+            mod = get_module(mod_name, mod_path)
+
+            proccessed[key][value["name"]] = mod
 
     return proccessed
