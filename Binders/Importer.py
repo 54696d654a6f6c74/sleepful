@@ -5,7 +5,7 @@ def get_module(module_name: str, module_path: str):
     spec = spec_from_file_location(module_name, module_path)
     module = module_from_spec(spec)
     spec.loader.exec_module(module)
-    return module
+    return getattr(module, module_name)
 
 
 def handle_imports(imports: dict) -> dict:
