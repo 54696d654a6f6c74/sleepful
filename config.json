@@ -4,7 +4,7 @@
             {
                 "name": "filesys",
                 "path": "./DataHandler/Filesys/FilesysData.py",
-                "module_name": "DataHandler.Filesys"
+                "module_name": "FilesysData"
             }
         ]
     },
