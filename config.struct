@@ -1,6 +1,12 @@
 {
   imports: {
-    <W.I.P>
+    <IMPORT_TYPE>: [
+      {
+        name: <IMPORT_NAME>,
+        path: <PATH_TO_FILE>,
+        package_name: <PYTHON_PACKAGE_NAME>
+      }
+    ]
   },
   data: <ROOT DATA DIR>,
   models: {
