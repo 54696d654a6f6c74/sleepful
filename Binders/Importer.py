@@ -15,7 +15,7 @@ def handle_imports(imports: dict) -> dict:
         proccessed[key] = {}
 
         for value in values:
-            mod_name = value["module_name"]
+            mod_name = value["package_name"]
             mod_path = value["path"]
 
             mod = get_module(mod_name, mod_path)
