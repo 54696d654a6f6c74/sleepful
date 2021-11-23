@@ -2,7 +2,7 @@ from typing import Callable
 from flask import Blueprint, Flask
 from Behavior import mapper, Behavior
 
-from Auth.BasicAuth import auth
+from Middleware.BasicAuth import auth
 
 from .Importer import handle_imports
 from DataHandler import *
@@ -17,20 +17,16 @@ def _get_behavior(name: str, behaviors: list, init_params: dict) -> Behavior:
     return view(**init_params)
 
 
-def get_bp(name: str, model: dict, init_params: dict, prefix: str = "", auth_func: Callable = None, auth_params: dict = None) -> Blueprint:
-    behaviors_key = prefix + "behaviors"
-    type_name = prefix + name
+def get_bp(name: str, init_params: dict, cont: dict, middleware: list[Callable] = []) -> Blueprint:
+    bp = Blueprint(name, __name__, url_prefix = '/' + init_params["route"])
+    del init_params["route"]
 
-    if behaviors_key in model:
-        bp = Blueprint(type_name, __name__, url_prefix = "/" + model["route"])
+    view_obj = _get_behavior(name, cont["names"], init_params)
 
-        view_obj = _get_behavior(type_name, model[behaviors_key], init_params)
-        if auth_params is not None:
-            view_obj.bind(bp, auth_func, **auth_params)
-        else:
-            view_obj.bind(bp, auth_func or None)
+    for func in middleware:
+        view_obj.bind(bp, func)
 
-        return bp
+    return bp
 
 
 def build_modules(imports):
@@ -40,7 +36,7 @@ def build_modules(imports):
             "filesys": FilesysData,
             "sqlite": SQLiteData
         },
-        "auth": {
+        "middleware": {
             "basic_auth": auth
         }
     }
@@ -58,17 +54,20 @@ def build_modules(imports):
 def bind(app: Flask, config: dict):
     modules = build_modules(config["imports"])
 
-    for name, model in config["models"].items():
-        tar_data_handler = modules["data_handler"][model["data_handler"]]
-        tar_auth = modules["auth"][model["auth"]]
+    for model_name, model in config["models"].items():
+        behaviors = model["behaviors"]
 
-        model["init"]["route"] = f"{config['data_root']}/{model['route']}"
-        model["init"]["data_handler"] = tar_data_handler
+        init = behaviors["init"]
+        middleware = behaviors["middleware"]
 
-        init = model.get('init', {})
+        init["route"] = f"{config['data_root']}/{model['route']}"
+        init["data_handler"] = modules["data_handler"][model["data_handler"]]
 
-        auth_init = init | model.get('auth_init', {})
-        non_auth_init = init | model.get('non_auth_init', {})
+        for cont_name, cont in behaviors["containers"].items():
+            spec_init = cont.get("init", {}) | init
+            spec_middleware = cont.get("middleware", {}) | middleware
 
-        app.register_blueprint(get_bp(name, model, non_auth_init))
-        app.register_blueprint(get_bp(name, model, auth_init, "auth_", tar_auth))
+            middleware_funcs = [modules["middleware"][name] for name in spec_middleware]
+
+            bp_name = model_name + '_' + cont_name
+            app.register_blueprint(get_bp(bp_name, spec_init, cont, middleware_funcs))
