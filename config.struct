@@ -13,20 +13,26 @@
     <MODEL NAME>: {
       route: <API ROOT>,
       data_handler: <DATA HANDLER REF>,
-      auth_behaviors: [
-        <BEHAVIORS AVAILABLE FOR AUTHORIZED SESSIONS>
-      ],
-      behaviors: [
-        <BEHAVIORS AVAILABLE TO ALL SESSIONS>
-      ],
-      auth_init: {
-        <PARAMS SPECIFIC TO INITIALIZING AUTH BEHAVIORS>
-      },
-      non_auth_init: {
-        <PARAMS SPECIFIC TO INITIALIZING NON AUTH BEHAVIORS>
-      }
-      init: {
-        <SHARED PARAMS FOR INITIALIZING ALL BEHAVIORS>
+      behaviors: {
+        init: {
+          <SHARED PARAMS FOR INITIALIZING ALL BEHAVIORS>
+        },
+        middleware: [
+          <SHARED MIDDLEWARE FOR ALL BEHAVIORS>
+        ],
+        containers: {
+          <BEHAVIOR CONTAINER NAME>: {
+            init: {
+              <PARAMS SPECIFIC TO INITIALIZING BEHAVIORS IN CONTAINER>
+            },
+            names: [
+              <BEHAVIORS WITHIN THIS CONTAINER>
+            ],
+            middleware: [
+              <MIDDLEWARE FOR BEHAVIORS IN THIS CONTAINER>
+            ]
+          }
+        }
       }
     }
   }
