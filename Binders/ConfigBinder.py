@@ -10,6 +10,7 @@ from DataHandler import *
 
 def _get_behavior(name: str, behaviors: list, init_params: dict) -> Behavior:
     types = []
+    print(init_params)
     for behavior in behaviors:
         types.append(mapper[behavior])
 
@@ -19,7 +20,7 @@ def _get_behavior(name: str, behaviors: list, init_params: dict) -> Behavior:
 
 def get_bp(name: str, init_params: dict, cont: dict, middleware: list[Callable] = []) -> Blueprint:
     bp = Blueprint(name, __name__, url_prefix = '/' + init_params["route"])
-    del init_params["route"]
+    # del init_params["route"]
 
     view_obj = _get_behavior(name, cont["names"], init_params)
 
@@ -58,14 +59,14 @@ def bind(app: Flask, config: dict):
         behaviors = model["behaviors"]
 
         init = behaviors["init"]
-        middleware = behaviors["middleware"]
+        middleware = behaviors.get("middleware", [])
 
         init["route"] = f"{config['data_root']}/{model['route']}"
         init["data_handler"] = modules["data_handler"][model["data_handler"]]
 
         for cont_name, cont in behaviors["containers"].items():
             spec_init = cont.get("init", {}) | init
-            spec_middleware = cont.get("middleware", {}) | middleware
+            spec_middleware = list(set(cont.get("middleware", []) + middleware))
 
             middleware_funcs = [modules["middleware"][name] for name in spec_middleware]
 

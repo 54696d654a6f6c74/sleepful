@@ -39,7 +39,7 @@
                             "Updateable"
                         ],
                         "middleware": [
-                            "BasicAuth"
+                            "basic_auth"
                         ]
                     }
                 }
