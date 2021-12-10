@@ -11,32 +11,33 @@ Write up a `config.json` file and run the `driver.py`.
 `sleepful` parses the `config.json` file and generates an internal structure of the API. There are 3 core components to in this process:
 - Behaviors
 - DataHandlers
-- Authorizations (middleware)
+- Middleware
 
-Each `model` is assigned a unique pair of Flask blueprints (one for endpoints containing middleware and one for endpoints without middleware).
-
+Each `model` consists of containers. Each container is assigned a unique Flask blueprint.
 Those blueprints are registed into the Flask `app` and exposed as API endpoints.
+Containers help separate groups of `behavior`s that don't share middleware.
 
 ### Behaviors:
 ##### Classes that contain the functionality of a model.
 - A `Behavior` is a class that must implement a function `_bind` which binds funcetions to REST endpoints. When a request is made to an endpoint, the function
 bound to that endpoint is called. A single `Behavior` can bind multiple functions to multiple endpoints.
 
-- When sleepful generates the internal structure of the API, multiple `Behavior`s are amalgamated into a `model`.
+- When sleepful generates the internal structure of the API, multiple containers consiting of `Behavior`s are amalgamated into a `model`.
 
 - `Behavior`s can require `init_params` to be succssefully initilized.
 
-**Note:** Behaviors allow for inheritance, but only the **highest level** necessary Behavior should be specified in the `config.json` to avoid MRO complications.
-**Example:** if a model should be `Listable`, it should not also be `Indexable` since `Listable` is derived from `Indexable`
+**Note:** Behaviors allow for inheritance, but only the **highest level** Behavior necessary should be specified in the `config.json` to avoid MRO complications.
+**For example:** if a model should be `Listable`, it should not also be `Indexable` since `Listable` is derived from `Indexable` and already carries its functionality.
 
 ### Data handlers:
-##### Classes that wrap interactions with databases.
+##### Classes that abstract interactions with databases.
 A `DataHandler` abstracts away interactions with a database or any data source (as shown by the `FilesysData` implementation) for `Behavior`s.
 This allows `sleepful` to be database agnostic.
 
-### Authorization (middleware)
-###### *W.I.P*
-##### Packages that run functions prior to the functions bound to endpoints by `Behavior`s
+### Middleware
+###### Functions that run prior to behaviors such as validators and authenticators
+`Middleware`s are classes that contain a `_run` function which called prior to executing a `Behavior`. Under the hood they are registered as a `before_request` function for the Flask Blueprint associated with the container in which they're declared.
+You can find more details in the [Flask docs](https://flask.palletsprojects.com/en/2.0.x/api/#flask.Flask.before_request).
 
 ## Advanced usage:
 `sleepful` allows for external `Authorizer`s, `Behavior`s and `DataHandler`s to be imported.
@@ -49,5 +50,5 @@ All a custom `Behavior` must do is inherit from an existing `Behavior` or from t
 ##### Data handler:
 All a custom `DataHandler` must do is inherit from an existing `DataHandler` or the base `DataHandler` class.
 
-##### Authorizer:
-All a custmo `Authorizer` must do is contain an `auth` function, that will be ran as middleware.
+##### Middleware:
+All a custom `Middleware` must do is inherit from an existing `Middleware` or the base `Middleware` class.
