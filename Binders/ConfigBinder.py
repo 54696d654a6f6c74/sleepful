@@ -10,7 +10,6 @@ from DataHandler import *
 
 def _get_behavior(name: str, behaviors: list, init_params: dict) -> Behavior:
     types = []
-    print(init_params)
     for behavior in behaviors:
         types.append(mapper[behavior])
 
@@ -20,7 +19,6 @@ def _get_behavior(name: str, behaviors: list, init_params: dict) -> Behavior:
 
 def get_bp(name: str, init_params: dict, cont: dict, middleware: list[Callable] = []) -> Blueprint:
     bp = Blueprint(name, __name__, url_prefix = '/' + init_params["route"])
-    # del init_params["route"]
 
     view_obj = _get_behavior(name, cont["names"], init_params)
 
