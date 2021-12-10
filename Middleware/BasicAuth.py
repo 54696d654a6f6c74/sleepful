@@ -6,27 +6,6 @@ from json import load
 from hashlib import pbkdf2_hmac
 
 
-admin_file = open("./admin.json", 'r')
-admin = load(admin_file)
-admin_file.close()
-
-
-def auth():
-    try:
-        uname = session["username"]
-        passwd = session["password"]
-    except KeyError:
-        return Response(status = 403)
-
-    key = admin["password"]
-    salt = admin["salt"]
-
-    in_key = pbkdf2_hmac('sha256', passwd.encode(), salt.encode(), 100000)
-
-    if in_key.hex() != key or admin["username"] != uname:
-        return Response(status = 403)
-
-
 class BasicAuth(Middleware):
     def __init__(self, **args):
         admin_file_path = args["admin_file_path"]
@@ -44,10 +23,10 @@ class BasicAuth(Middleware):
         except KeyError:
             return Response(status = 403)
 
-        key = admin["password"]
-        salt = admin["salt"]
+        key = self.admin_data["password"]
+        salt = self.admin_data["salt"]
 
         in_key = pbkdf2_hmac('sha256', passwd.encode(), salt.encode(), 100000)
 
-        if in_key.hex() != key or admin["username"] != uname:
+        if in_key.hex() != key or self.admin_data["username"] != uname:
             return Response(status = 403)
