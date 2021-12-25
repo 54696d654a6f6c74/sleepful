@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from flask import Blueprint
-from typing import Callable
+from Middleware.Meta.Middleware import Middleware
 
 from DataHandler import DataHandler
 
@@ -14,9 +14,9 @@ class Behavior(ABC):
     def _bind(self, bp: Blueprint):
         ...
 
-    def bind(self, bp: Blueprint, auth: Callable = None, **auth_opts):
-        if auth is not None:
-            bp.before_request(lambda: auth(**auth_opts))
-            pass
+    def bind(self, bp: Blueprint, middleware: list[Middleware] = []):
+        for midware_defs in middleware:
+            initilized = midware_defs["class"](**midware_defs["args"])
+            bp.before_request(initilized._run)
 
         self._bind(bp)
