@@ -13,27 +13,38 @@
         "post": {
             "route": "posts",
             "data_handler": "filesys",
-            "auth": "basic_auth",
-            "auth_behaviors":
-            [
-                "Postable",
-                "Deleteable",
-                "Updateable"
-            ],
-            "behaviors": [
-                "Pageable",
-                "Login"
-            ],
-            "init": {
-                "header_file": "header",
-                "fields": [
-                    "header",
-                    "content",
-                    "md"
-                ]
-            },
-            "non_auth_init":{
-                "page_size": 5
+            "behaviors": {
+                "init": {
+                    "header_file": "header",
+                    "fields": [
+                        "header",
+                        "content",
+                        "md"
+                    ]
+                },
+                "containers": {
+                    "normal": {
+                        "names": [
+                            "Pageable",
+                            "Login"
+                        ],
+                        "init": {
+                            "page_size": 5
+                        }
+                    },
+                    "auth": {
+                        "names": [
+                            "Postable",
+                            "Deleteable",
+                            "Updateable"
+                        ],
+                        "middleware": {
+                            "basic_auth": {
+                                "admin_file_path": "./admin.json"
+                            }
+                        }
+                    }
+                }
             }
         }
     }
