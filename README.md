@@ -15,6 +15,7 @@ Write up a `config.json` file and run the `driver.py`.
 
 Each `model` consists of containers. Each container is assigned a unique Flask blueprint.
 Those blueprints are registed into the Flask `app` and exposed as API endpoints.
+
 Containers help separate groups of `behavior`s that don't share middleware.
 
 ### Behaviors:
@@ -26,7 +27,8 @@ bound to that endpoint is called. A single `Behavior` can bind multiple function
 
 - `Behavior`s can require `init_params` to be succssefully initilized.
 
-**Note:** Behaviors allow for inheritance, but only the **highest level** Behavior necessary should be specified in the `config.json` to avoid MRO complications.
+**Note:** Behaviors allow for inheritance, as a result, only the **highest level** Behavior necessary should be specified in the `config.json` to avoid MRO complications.
+
 **For example:** if a model should be `Listable`, it should not also be `Indexable` since `Listable` is derived from `Indexable` and already carries its functionality.
 
 ### Data handlers:
@@ -38,6 +40,10 @@ This allows `sleepful` to be database agnostic.
 ###### Functions that run prior to behaviors such as validators and authenticators
 `Middleware`s are classes that contain a `_run` function which called prior to executing a `Behavior`. Under the hood they are registered as a `before_request` function for the Flask Blueprint associated with the container in which they're declared.
 You can find more details in the [Flask docs](https://flask.palletsprojects.com/en/2.0.x/api/#flask.Flask.before_request).
+
+`Middleware` classes may require `init_params` similarly to `Behaviors`.
+
+**Note:** `Middleware`s are called in the order they are declared.
 
 ## Advanced usage:
 `sleepful` allows for external `Authorizer`s, `Behavior`s and `DataHandler`s to be imported.
