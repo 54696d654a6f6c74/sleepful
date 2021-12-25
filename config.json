@@ -38,9 +38,11 @@
                             "Deleteable",
                             "Updateable"
                         ],
-                        "middleware": [
-                            "basic_auth"
-                        ]
+                        "middleware": {
+                            "basic_auth": {
+                                "admin_file_path": "./admin.json"
+                            }
+                        }
                     }
                 }
             }

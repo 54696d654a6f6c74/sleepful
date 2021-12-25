@@ -17,9 +17,10 @@
         init: {
           <SHARED PARAMS FOR INITIALIZING ALL BEHAVIORS>
         },
-        middleware: [
-          <SHARED MIDDLEWARE FOR ALL BEHAVIORS>
-        ],
+        middleware: {
+          <MIDDLEWARE NAME>: {
+            <INIT PARAM NAME>: <INIT PARAM VALUE>
+        },
         containers: {
           <BEHAVIOR CONTAINER NAME>: {
             init: {
@@ -28,9 +29,11 @@
             names: [
               <BEHAVIORS WITHIN THIS CONTAINER>
             ],
-            middleware: [
-              <MIDDLEWARE FOR BEHAVIORS IN THIS CONTAINER>
-            ]
+            middleware: {
+              <MIDDLEWARE NAME>: {
+                <INIT PARAM NAME>: <INIT PARAM VALUE>
+              }
+            }
           }
         }
       }
