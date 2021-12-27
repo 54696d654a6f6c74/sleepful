@@ -19,7 +19,10 @@ class Indexable(Behavior):
         data_dict = {}
 
         with self.data_handler(self.route) as handler:
-            data_dict = handler.get_data_fields(index, self.fields)
+            try:
+                data_dict = handler.get_data_fields(index, self.fields)
+            except AttributeError:
+                return Response(status = 404)
 
         return data_dict
 
