@@ -51,7 +51,7 @@ def build_modules(imports):
 
 
 def bind(app: Flask, config: dict):
-    modules = build_modules(config["imports"])
+    modules = build_modules(config.get("imports", {}))
 
     for model_name, model in config["models"].items():
         behaviors = model["behaviors"]
