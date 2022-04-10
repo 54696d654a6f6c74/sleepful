@@ -1,6 +1,8 @@
+from Context import ctx
+
 from .Meta.Middleware import Middleware
 
-from flask import session, Response
+from flask import session, request, Response
 from json import load
 
 from hashlib import pbkdf2_hmac
@@ -15,6 +17,18 @@ class BasicAuth(Middleware):
         admin_file.close()
 
         super().__init__(**args)
+
+    @ctx.app.route("/login", endpoint = "login", methods = ['POST'])
+    def login(self):
+        try:
+            username = request.get_json()["username"]
+            password = request.get_json()["password"]
+
+            session["username"] = username
+            session["password"] = password
+        except KeyError:
+            return Response(status = 400)
+        return Response(status = 200)
 
     def _run(self):
         try:
