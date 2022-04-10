@@ -6,7 +6,6 @@ from .Deleteable import *
 from .Postable import *
 from .Updateable import *
 from .Pageable import *
-from .Login import *
 
 mapper = {
     Listable.__name__: Listable,
@@ -15,5 +14,4 @@ mapper = {
     Postable.__name__: Postable,
     Updateable.__name__: Updateable,
     Pageable.__name__: Pageable,
-    Login.__name__: Login
 }
