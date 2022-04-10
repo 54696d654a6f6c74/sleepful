@@ -1,0 +1,1 @@
+python3 -m PyInstaller --clean -F -n sleepful ./driver.py
