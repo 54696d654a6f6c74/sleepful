@@ -19,10 +19,12 @@ class BasicAuth(Middleware):
         super().__init__(**args)
 
     @ctx.app.route("/login", endpoint = "login", methods = ['POST'])
-    def login(self):
+    def __login():
         try:
-            username = request.get_json()["username"]
-            password = request.get_json()["password"]
+            req = request.get_json()
+
+            username = req["username"]
+            password = req["password"]
 
             session["username"] = username
             session["password"] = password
