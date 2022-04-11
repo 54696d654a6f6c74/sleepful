@@ -12,6 +12,7 @@ ctx.app.config["DEBUG"] = True
 ctx.app.config["SECRET_KEY"] = urandom(64)
 ctx.app.config["SESSION_TYPE"] = "filesystem"
 ctx.app.config["SESSION_COOKIE_SECURE"] = True
+ctx.app.config["SESSION_COOKIE_SAMESITE"] = "None"
 
 Session(ctx.app)
 CORS(ctx.app)
